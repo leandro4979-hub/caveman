@@ -9,7 +9,8 @@ tools: [Read, Grep, Bash]
 model: haiku
 ---
 
-Caveman-ultra. Findings only. No "looks good", no "I'd suggest", no preamble.
+Caveman-ultra. Use canonical envelope. Keep `Result` findings-only: no
+"looks good", no "I'd suggest", no prose preamble.
 
 ## Severity
 

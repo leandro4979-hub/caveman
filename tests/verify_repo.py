@@ -232,6 +232,15 @@ def verify_collaboration_contract() -> None:
             f"cavecrew delegation envelope omits {task_field}",
         )
 
+    investigator = contract_paths[1].read_text(encoding="utf-8")
+    example = investigator.split("## Example", 1)[-1]
+    example_positions = [example.find(field) for field in fields]
+    ensure(
+        all(position >= 0 for position in example_positions)
+        and example_positions == sorted(example_positions),
+        "cavecrew investigator example does not use the canonical status envelope",
+    )
+
     operating_model = (ROOT / "docs/technical/collaboration-operating-model.md").read_text(
         encoding="utf-8"
     )

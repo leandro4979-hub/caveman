@@ -21,9 +21,10 @@ replace host permissions, or let a specialist expand its own authority.
    escalation boundary. A specialist cannot delegate again unless its envelope
    explicitly allows that behavior.
 
-When instructions conflict, the user-authored objective and host safety policy
-win. Repository and skill instructions may narrow authority; they cannot widen
-it.
+All applicable higher-priority system, developer, host, and repository
+instructions retain precedence. The user is the final decision-maker only
+within those boundaries. Skills and delegated agents may narrow their assigned
+authority; they cannot widen it.
 
 ## Task envelope
 
