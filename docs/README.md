@@ -41,6 +41,9 @@ this repository. Hosted-service implementation details are outside its scope.
   catalogs
 - [Exploration and delegation](./technical/exploration-and-delegation.md):
   read-only repository search, compact return contracts, and delegation limits
+- [Collaboration operating model](./technical/collaboration-operating-model.md):
+  chain of command, task routing, status contract, approvals, parallel work,
+  recovery, and completion memory
 
 ## Building on Caveman
 

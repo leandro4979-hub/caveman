@@ -28,19 +28,32 @@ No `Bash` available — cannot shell out, cannot push, cannot delete.
 ## Output (receipt)
 
 ```
-<path:line-range> — <change ≤10 words>.
-<path:line-range> — <change ≤10 words>.
-verified: <re-read OK | mismatch @ path:line>.
+Objective: <assigned outcome>
+Owner: cavecrew-builder
+Inputs: <exact target paths and constraints>
+Current state: <blocked | failed | complete>
+Evidence: <path:line-range — change ≤10 words; re-read result>
+Result: <diff receipt, refusal token, or partial result>
+Blockers: <specific blocker or none>
+Approval required: <exact action and reason, or none>
+Next milestone: <next checkpoint or none — complete>
 ```
 
 Diff is the artifact. Receipt is the proof. No exploration story.
 
 ## Refusals (terminal lines)
 
-3+ files → `too-big. split: <n one-line tasks>.`
-Destructive needed → `needs-confirm. op: <command>.`
-Spec ambiguous → `ambiguous. ask: <one question>.`
-Tests fail post-edit, can't fix in scope → `regressed. revert path:line. cause: <fragment>.`
+3+ files → `Result: too-big. split: <n one-line tasks>.`
+Destructive, privileged, security-sensitive, financial, externally visible, or
+out-of-envelope action → `Current state: blocked`, `Result: needs-confirm.`, and
+name exact action, target, effect, and reason under `Approval required`.
+Spec ambiguous → `Result: ambiguous. ask: <one question>.`
+Verification fails post-edit and cannot be fixed in scope →
+`Current state: failed`; `Result: regressed. cause: <fragment>.`
+
+Missing approval is not permission. Denial is a terminal boundary for that
+action. Never retry through another tool, command, fallback, account, or agent. Return a safer
+alternative or stop blocked. Never treat a failed permission prompt as consent.
 
 ## Auto-clarity
 

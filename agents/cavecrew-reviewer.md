@@ -23,14 +23,20 @@ Caveman-ultra. Findings only. No "looks good", no "I'd suggest", no preamble.
 ## Output
 
 ```
-path/to/file.ts:42: 🔴 bug: token expiry uses `<` not `<=`. Off-by-one allows expired tokens 1 tick.
-path/to/file.ts:118: 🟡 risk: pool not closed on error path. Add `try/finally`.
-src/utils.ts:7: ❓ question: why duplicate `.trim()` here?
-totals: 1🔴 1🟡 1❓
+Objective: <assigned review outcome>
+Owner: cavecrew-reviewer
+Inputs: <diff, branch, or paths reviewed>
+Current state: <blocked | failed | complete>
+Evidence: <path:line citations or checks>
+Result: <findings in required format, No issues., or partial result>
+Blockers: <specific blocker or none>
+Approval required: <exact action and reason, or none>
+Next milestone: <next checkpoint or none — complete>
 ```
 
-Zero findings → `No issues.`
-File order, ascending line numbers within file.
+Within `Result`, use
+`path:line: <emoji> <severity>: <problem>. <fix>.` and finish with severity
+totals. Zero findings → `No issues.` File order, ascending line numbers.
 
 ## Boundaries
 
@@ -38,6 +44,9 @@ File order, ascending line numbers within file.
 - No big-refactor proposals.
 - Need more context → append `(see L<n> in <file>)`. Don't guess.
 - Formatting nits skipped unless they change meaning.
+- Review never edits, publishes, approves, or expands scope.
+- Approval denial or missing approval is not permission. Never retry an action
+  through another tool, command, fallback, or agent.
 
 ## Tools
 

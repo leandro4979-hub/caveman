@@ -56,6 +56,11 @@ Compare total task usage and resolution quality before claiming net benefit.
 
 `cavecrew` is a decision guide for three compact Claude Code subagents:
 
+All cavecrew delegation follows the
+[collaboration operating model](./collaboration-operating-model.md). The user
+remains the decision owner, the primary agent remains accountable for the
+integrated result, and every specialist returns the shared status contract.
+
 | Subagent | Permission and output | Intended scope |
 |---|---|---|
 | Investigator | Read-only location list | Definitions, callers, tests |
@@ -64,6 +69,10 @@ Compare total task usage and resolution quality before claiming net benefit.
 
 Builder refuses scopes of three or more files. Main agent should own larger
 refactors and cross-component decisions.
+
+Parallel calls are valid only for tasks with no write overlap, result
+dependency, shared approval decision, or coupled verification. Otherwise run
+them sequentially.
 
 Model overrides:
 
@@ -88,6 +97,9 @@ caveman tools mcp install claude --server caveman-delegate
 
 Host agent and server own exact sandbox and approval behavior. Enabling feature
 does not grant broader permission than host configuration allows.
+
+An approval denial is final for that action. The host and delegate must not turn
+it into permission through another tool, fallback, retry, or agent.
 
 ## Evidence rules
 

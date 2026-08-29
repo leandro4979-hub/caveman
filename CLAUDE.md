@@ -126,9 +126,9 @@ caveman/
 | `skills/cavecrew/SKILL.md` | Cavecrew decision guide — when to delegate to caveman subagents vs vanilla. Edit only here. |
 | `skills/{caveman-setup,caveman-discover,caveman-learn,caveman-manage,caveman-optimize,caveman-explore,caveman-evidence-review}/SKILL.md` | Engine/proxy driver skills. Ship with the plugin (see the auto-discovery note below). |
 | `skills/{investigate-first,lean-build,surgical-patch,safe-refactor,migration,verify-and-stop}/SKILL.md` | Token-discipline work patterns — same goal as caveman prose (fewer output tokens) applied to code volume rather than wording. Deliberately un-branded so they read as generic patterns to the model. Ship with the plugin. |
-| `agents/cavecrew-investigator.md` | Read-only locator subagent (haiku). Output contract: `path:line — symbol — note`. |
-| `agents/cavecrew-builder.md` | Surgical 1-2 file editor subagent. Refuses 3+ file scope. |
-| `agents/cavecrew-reviewer.md` | Diff/file reviewer subagent (haiku). One-line findings with severity emoji. |
+| `agents/cavecrew-investigator.md` | Read-only locator subagent (haiku). Shared status envelope; result payload is `path:line — symbol — note`. |
+| `agents/cavecrew-builder.md` | Surgical 1-2 file editor subagent. Shared status envelope; refuses 3+ file scope. |
+| `agents/cavecrew-reviewer.md` | Diff/file reviewer subagent (haiku). Shared status envelope; findings use severity emoji. |
 | `src/plugins/opencode/plugin.js` | opencode native plugin. ESM Bun module — `session.created` writes flag, `tui.prompt.append` parses slash/natural-language activation and appends per-prompt reinforcement. Reuses `caveman-config.js` via `createRequire`. |
 | `src/plugins/opencode/commands/*.md` | Six opencode slash-command prompt templates (`/caveman`, `/caveman-{commit,review,compress,stats,help}`). |
 

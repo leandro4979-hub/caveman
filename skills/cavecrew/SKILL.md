@@ -27,13 +27,47 @@ Cavecrew = three subagent presets that emit caveman output. Same job as Anthropi
 
 Rule of thumb: **if you'd want the subagent's output in 1/3 the tokens, pick cavecrew. If you'd want prose, pick vanilla.**
 
+## Before delegation
+
+Main thread stays accountable. Give every specialist a bounded task envelope:
+
+- `Objective` — one observable outcome.
+- `Owner` — one agent; no shared accountability.
+- `Inputs` — exact files, symbols, diff, or facts.
+- `Outputs` — expected artifact plus status contract.
+- `Boundaries` — allowed tools/files/mutations and exclusions.
+- `Failure behavior` — stop or return safe partial evidence.
+- `Completion criteria` — checks that make the task complete.
+- `Approval boundary` — actions that require user approval.
+
+If objective, owner, inputs, output, or completion criteria are unclear, keep
+work in main thread or ask user. Do not delegate an open-ended mission.
+
 ## Why this exists (the real win)
 
 Subagent tool results get injected into main context verbatim. A vanilla `Explore` that returns 2k tokens of prose costs 2k tokens of main-context budget every time. The same finding from `cavecrew-investigator` returns ~700 tokens. Across 20 delegations in one session that's the difference between context exhaustion and finishing the task.
 
 ## Output contracts
 
-What main thread can rely on per agent:
+Every agent returns the same status envelope. Values stay terse; fields never
+disappear:
+
+```text
+Objective: <assigned outcome>
+Owner: <agent name>
+Inputs: <paths, symbols, diff, or facts used>
+Current state: <not-started | in-progress | blocked | failed | complete>
+Evidence: <verified citations, checks, or none>
+Result: <agent-specific payload, partial result, or none>
+Blockers: <specific blocker or none>
+Approval required: <exact action and reason, or none>
+Next milestone: <next observable checkpoint or none — complete>
+```
+
+`complete` requires the task's completion criteria and evidence. Refusal and
+failure still use all fields.
+
+Agent-specific `Result` payloads:
 
 **`cavecrew-investigator`**
 ```
@@ -48,7 +82,8 @@ Or `No match.` Always file-path-first, line-number-attached, backticked symbols.
 <path:line-range> — <change ≤10 words>.
 verified: <re-read OK | mismatch @ path:line>.
 ```
-Or one of: `too-big.` / `needs-confirm.` / `ambiguous.` / `regressed.` (terminal first token).
+On refusal, put `too-big.`, `needs-confirm.`, `ambiguous.`, or `regressed.` in
+`Result`; set state to `blocked` or `failed` and name the next checkpoint.
 
 **`cavecrew-reviewer`**
 ```
@@ -67,6 +102,9 @@ Or `No issues.` Findings sorted file → line ascending.
 **Parallel scout** (when investigation is broad):
 Spawn 2-3 `cavecrew-investigator` calls in one message (different angles: defs vs callers vs tests). Aggregate in main thread.
 
+Parallel only when tasks have no write overlap, result dependency, shared
+approval decision, or coupled verification. Otherwise sequence them.
+
 **Single-shot edit** (when site is already known):
 Skip investigator. Hand exact path:line to `cavecrew-builder` directly.
 
@@ -76,6 +114,20 @@ Skip investigator. Hand exact path:line to `cavecrew-builder` directly.
 - Don't chain `cavecrew-investigator → cavecrew-builder` for a 5-file refactor. Builder will return `too-big.` and you'll have wasted a turn.
 - Don't ask `cavecrew-reviewer` for "general feedback" — it returns findings only, no architecture opinions. Use `Code Reviewer` for that.
 - Don't expect prose. Cavecrew output is structured, sometimes terse to the point of cryptic. If a human will read it directly, paraphrase.
+
+## Authority and recovery
+
+- User is final decision-maker. Main thread coordinates and remains accountable.
+- Delegation transfers task work, never authority or final ownership.
+- Approval required before destructive, privileged, security-sensitive,
+  financial, externally visible, or out-of-envelope action.
+- Denial or missing approval is not permission. Never retry the same action via
+  another tool, fallback, account, browser, or subagent.
+- Reuse completed results while inputs and evidence remain current. Repeat only
+  after changed inputs, stale evidence, failed downstream validation, or an
+  explicit rerun request.
+- On failure: report evidence, classify blocker, return safe partial result,
+  and escalate the smallest required decision. Never broaden scope silently.
 
 ## Auto-clarity (inherited)
 

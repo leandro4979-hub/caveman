@@ -19,6 +19,10 @@ Three subagents:
 
 Use vanilla `Explore` or `Code Reviewer` when you want prose, architecture commentary, or rationale. Use main thread directly for one-line answers and 3+ file refactors.
 
+The user remains the final decision-maker and the main thread remains the
+accountable coordinator. Every subagent reports the same nine-field status
+contract, including evidence, blockers, approval needs, and next milestone.
+
 This skill is a decision guide, not a slash command. It activates when the conversation mentions delegation.
 
 ## How to invoke
@@ -29,11 +33,14 @@ Triggers on phrases like "delegate to subagent", "use cavecrew", "spawn investig
 
 Locate → fix → verify (most common):
 
-1. `cavecrew-investigator` returns site list (`path:line`, symbol, note)
+1. `cavecrew-investigator` returns a status envelope with verified site list
+   (`path:line`, symbol, note)
 2. Main thread picks 1-2 sites, hands paths to `cavecrew-builder`
 3. `cavecrew-reviewer` audits the resulting diff
 
-Parallel scout: spawn 2-3 `cavecrew-investigator` calls in one message with different angles (defs, callers, tests). Aggregate in main.
+Parallel scout: spawn 2-3 `cavecrew-investigator` calls in one message with
+different angles (defs, callers, tests) only when they have no dependency,
+shared approval, write overlap, or coupled verification. Aggregate in main.
 
 ## Model overrides
 
@@ -64,4 +71,5 @@ plugin update or reinstall.
 - [`agents/cavecrew-investigator.md`](../../agents/cavecrew-investigator.md)
 - [`agents/cavecrew-builder.md`](../../agents/cavecrew-builder.md)
 - [`agents/cavecrew-reviewer.md`](../../agents/cavecrew-reviewer.md)
+- [Collaboration operating model](../../docs/technical/collaboration-operating-model.md)
 - [Caveman README](../../README.md): repo overview

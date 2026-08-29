@@ -174,6 +174,95 @@ def verify_skill_frontmatter_upload_compatibility() -> None:
     print("Skill frontmatter descriptions avoid XML-like tags")
 
 
+def verify_collaboration_contract() -> None:
+    section("Collaboration Contract")
+
+    fields = (
+        "Objective:",
+        "Owner:",
+        "Inputs:",
+        "Current state:",
+        "Evidence:",
+        "Result:",
+        "Blockers:",
+        "Approval required:",
+        "Next milestone:",
+    )
+    contract_paths = [
+        ROOT / "skills/cavecrew/SKILL.md",
+        ROOT / "agents/cavecrew-investigator.md",
+        ROOT / "agents/cavecrew-builder.md",
+        ROOT / "agents/cavecrew-reviewer.md",
+    ]
+    for path in contract_paths:
+        text = path.read_text(encoding="utf-8")
+        positions = [text.find(field) for field in fields]
+        ensure(
+            all(position >= 0 for position in positions),
+            f"{path} omits required status field(s): "
+            + ", ".join(field for field, position in zip(fields, positions) if position < 0),
+        )
+        ensure(
+            positions == sorted(positions),
+            f"{path} status fields are not in canonical order",
+        )
+        lower = text.lower()
+        ensure(
+            "missing approval" in lower and "not permission" in lower,
+            f"{path} omits the non-escalation rule for missing approval",
+        )
+        ensure(
+            "never retry" in text.lower(),
+            f"{path} omits the no-retry rule for denied actions",
+        )
+
+    cavecrew_skill = contract_paths[0].read_text(encoding="utf-8")
+    for task_field in (
+        "Objective",
+        "Owner",
+        "Inputs",
+        "Outputs",
+        "Boundaries",
+        "Failure behavior",
+        "Completion criteria",
+        "Approval boundary",
+    ):
+        ensure(
+            f"`{task_field}`" in cavecrew_skill,
+            f"cavecrew delegation envelope omits {task_field}",
+        )
+
+    operating_model = (ROOT / "docs/technical/collaboration-operating-model.md").read_text(
+        encoding="utf-8"
+    )
+    required_rules = (
+        "User — decision owner",
+        "Primary agent — coordinator and accountable owner",
+        "No write overlap",
+        "A denial is a terminal boundary for that action",
+        "Repeat a completed step only when its inputs changed",
+        "Failure behavior",
+        "Completion criteria",
+    )
+    for rule in required_rules:
+        ensure(rule in operating_model, f"collaboration operating model missing rule: {rule}")
+
+    docs_index = (ROOT / "docs/README.md").read_text(encoding="utf-8")
+    ensure(
+        "collaboration-operating-model.md" in docs_index,
+        "docs index omits collaboration operating model",
+    )
+    delegation_docs = (ROOT / "docs/technical/exploration-and-delegation.md").read_text(
+        encoding="utf-8"
+    )
+    ensure(
+        "collaboration-operating-model.md" in delegation_docs,
+        "delegation docs do not route to canonical operating model",
+    )
+
+    print("Cavecrew status, authority, parallelism, recovery, and completion contracts OK")
+
+
 def verify_synced_files() -> None:
     section("Synced Files")
     skill_source = ROOT / "skills/caveman/SKILL.md"
@@ -714,6 +803,7 @@ def main() -> int:
         verify_untrusted_git_invocations,
         verify_shipped_skills_are_documented,
         verify_skill_frontmatter_upload_compatibility,
+        verify_collaboration_contract,
         verify_synced_files,
         verify_manifests_and_syntax,
         verify_package_contents,
